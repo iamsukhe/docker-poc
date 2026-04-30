@@ -25,9 +25,13 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: "Login to ACR"
+        uses: azure/docker-login@v2
+        with:
+          login-server: iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io
+
       - name: "Build and Push Docker Image"
         run: |
-          az acr login --name iamsukheacr18
           # Build the image using the short commit SHA as a tag
           docker build -t iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }} .
           # Push the image to ACR
