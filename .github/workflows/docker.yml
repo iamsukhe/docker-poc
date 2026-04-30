@@ -1,12 +1,11 @@
 name: Build and Push to ACR
 
-# This triggers the action whenever code is pushed to the 'main' branch
 on:
   push:
     branches:
       - main
 
-# Required for Workload Identity Federation (OIDC)
+# Critical for passwordless OIDC login
 permissions:
   id-token: write
   contents: read
@@ -18,17 +17,19 @@ jobs:
       - name: Checkout GitHub Actions
         uses: actions/checkout@v4
 
+      # This is the step that is currently failing for you
       - name: "Azure Login via OIDC"
         uses: azure/login@v2
         with:
           client-id: ${{ vars.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
       - name: "Build and Push Docker Image"
         run: |
-          # The identity can now read the registry settings and find the hashed URL!
+          # Log in using the Azure CLI (Now that you granted Reader access!)
           az acr login --name iamsukheacr18
 
+          # Build and push using the exact hashed URL
           docker build -t iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }} .
           docker push iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }}
