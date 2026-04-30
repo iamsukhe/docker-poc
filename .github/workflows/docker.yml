@@ -1,29 +1,34 @@
-name: Build and Push Flask Docker Image
+name: Build and Push to ACR
 
+# This triggers the action whenever code is pushed to the 'main' branch
 on:
   push:
     branches:
       - main
 
+# Required for Workload Identity Federation (OIDC)
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
+      - name: Checkout GitHub Actions
         uses: actions/checkout@v4
 
-      - name: Login to Azure Container Registry
-        uses: azure/docker-login@v1
+      - name: "Azure Login via OIDC"
+        uses: azure/login@v2
         with:
-          login-server: iamsukheacr18.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Build Docker image
+      - name: "Build and Push Docker Image"
         run: |
-          docker build -t iamsukheacr18.azurecr.io/flask-app:latest .
-
-      - name: Push Docker image
-        run: |
-          docker push iamsukheacr18.azurecr.io/flask-app:latest
+          az acr login --name iamsukheacr18
+          # Build the image using the short commit SHA as a tag
+          docker build -t iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }} .
+          # Push the image to ACR
+          docker push iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }}
