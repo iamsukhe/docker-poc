@@ -8,7 +8,7 @@ def health_check():
     Standard health check endpoint to verify the service is up.
     """
     return jsonify({
-        "status": "healthy",
+        "status": "Healthy",
         "container": "active"
     }), 200 
 
@@ -16,7 +16,7 @@ def health_check():
 def handle_data():
     if request.method == "GET":
         return jsonify({
-            "message": "This is a GET request!",
+            "message": "This is a GET request! Send a POST request with JSON data to see it in action.",
             "status": "success"
         }), 200
 

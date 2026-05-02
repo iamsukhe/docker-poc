@@ -33,7 +33,5 @@ jobs:
       - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v3
         with:
-          # CHANGE THIS to your actual Web App name
           app-name: "proxima"
-          # This tells Azure exactly which version (SHA) to pull
           images: "iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }}"
