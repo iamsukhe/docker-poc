@@ -32,3 +32,7 @@ jobs:
           imageToDeploy: myflaskapp2026.azurecr.io/flaskapp:${{ github.sha }}
           containerAppName: my-flask-app
           resourceGroup: my-flask-rg
+          registryUrl: myflaskapp2026.azurecr.io
+          registryUsername: ${{ secrets.REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.REGISTRY_PASSWORD }}
+          targetPort: 8080
