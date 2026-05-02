@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-# Critical for passwordless OIDC login
 permissions:
   id-token: write
   contents: read
@@ -17,7 +16,6 @@ jobs:
       - name: Checkout GitHub Actions
         uses: actions/checkout@v4
 
-      # This is the step that is currently failing for you
       - name: "Azure Login via OIDC"
         uses: azure/login@v2
         with:
@@ -27,9 +25,15 @@ jobs:
 
       - name: "Build and Push Docker Image"
         run: |
-          # Log in using the Azure CLI (Now that you granted Reader access!)
           az acr login --name iamsukheacr18
-
-          # Build and push using the exact hashed URL
+          # We use github.sha to give every build a unique 'fingerprint'
           docker build -t iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }} .
           docker push iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }}
+
+      - name: "Deploy to Azure Web App"
+        uses: azure/webapps-deploy@v3
+        with:
+          # CHANGE THIS to your actual Web App name
+          app-name: "proxima"
+          # This tells Azure exactly which version (SHA) to pull
+          images: "iamsukheacr18-ahbfhyd4e2buaxf0.azurecr.io/flask-app:${{ github.sha }}"
