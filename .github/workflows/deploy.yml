@@ -18,17 +18,17 @@ jobs:
       - name: Build and push to ACR
         uses: azure/docker-login@v1
         with:
-          login-server: myregistry.azurecr.io
+          login-server: myflaskapp2026.azurecr.io
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       - run: |
-          docker build . -t myregistry.azurecr.io/flaskapp:${{ github.sha }}
-          docker push myregistry.azurecr.io/flaskapp:${{ github.sha }}
+          docker build . -t myflaskapp2026.azurecr.io/flaskapp:${{ github.sha }}
+          docker push myflaskapp2026.azurecr.io/flaskapp:${{ github.sha }}
 
       - name: Deploy to Container App
         uses: azure/container-apps-deploy-action@v1
         with:
-          imageToDeploy: myregistry.azurecr.io/flaskapp:${{ github.sha }}
+          imageToDeploy: myflaskapp2026.azurecr.io/flaskapp:${{ github.sha }}
           containerAppName: my-flask-app
           resourceGroup: my-flask-rg
