@@ -10,13 +10,13 @@ def health_check():
     return jsonify({
         "status": "Healthy",
         "container": "active"
-    }), 200 
+    }), 200 curk
 
 @app.route("/api/data", methods=["GET", "POST"])
 def handle_data():
     if request.method == "GET":
         return jsonify({
-            "message": "This is a GET request! Send a POST request with JSON data to see it in action.",
+            "message": "I am changing the code to test CI/CD pipeline!",
             "status": "success"
         }), 200
 
